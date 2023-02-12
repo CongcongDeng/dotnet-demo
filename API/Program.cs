@@ -29,4 +29,19 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// using statement means that this scope will be destroyed and cleared up form memory when it's done
+using var scope = app.Services.CreateScope();
+var services = scope.ServiceProvider;
+// Applies any pending migrations for the context to the database. Will create the database if it does not already exist.
+try
+{
+    var context = services.GetRequiredService<DataContext>();
+    context.Database.Migrate();
+}
+catch (Exception ex)
+{
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(ex, "An error occured during migration");
+}
+
 app.Run();
