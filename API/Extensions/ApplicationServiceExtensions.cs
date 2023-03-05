@@ -22,6 +22,9 @@ public static class ApplicationServiceExtensions
         });
         services.AddMediatR(typeof(AList.Handler));
         services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+        var serviceProvider = services.BuildServiceProvider();
+        var logger = serviceProvider.GetService<ILogger<AList>>();
+        services.AddSingleton(typeof(ILogger), logger);
 
         return services;
     }
